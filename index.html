@@ -26,7 +26,21 @@ object-fit:cover;
 
 <body>
 
-<img src="Quadro.png">
+<img id="quadro">
+
+<script>
+function atualizarImagem(){
+    const img = document.getElementById("quadro");
+    const timestamp = new Date().getTime();
+    img.src = "Quadro.png?t=" + timestamp;
+}
+
+// atualiza ao carregar
+atualizarImagem();
+
+// atualiza a cada 60 segundos
+setInterval(atualizarImagem, 60000);
+</script>
 
 </body>
 
