@@ -11,12 +11,14 @@ body{
     height:100vh;
     width:100vw;
     overflow:hidden;
+    display:flex;
+    justify-content:center;
+    align-items:center;
 }
 
 img{
     width:100vw;
     height:100vh;
-    object-fit:cover;
 }
 </style>
 
@@ -52,22 +54,27 @@ function atualizarTela() {
     const imagemDia = getImagemDoDia();
 
     if (!imagemDia) {
-        // Domingo → só quadro
+        img.style.objectFit = "cover";
         img.src = "Quadro.png?t=" + timestamp;
         setTimeout(atualizarTela, 60000);
         return;
     }
 
     if (mostrandoQuadro) {
+
+        img.style.objectFit = "cover"; // 🔥 quadro ocupa tudo
         img.src = "Quadro.png?t=" + timestamp;
+
         mostrandoQuadro = false;
+        setTimeout(atualizarTela, 50000);
 
-        setTimeout(atualizarTela, 50000); // 50 segundos
     } else {
-        img.src = imagemDia + "?t=" + timestamp;
-        mostrandoQuadro = true;
 
-        setTimeout(atualizarTela, 10000); // 10 segundos
+        img.style.objectFit = "contain"; // 🔥 não distorce
+        img.src = imagemDia + "?t=" + timestamp;
+
+        mostrandoQuadro = true;
+        setTimeout(atualizarTela, 10000);
     }
 }
 
