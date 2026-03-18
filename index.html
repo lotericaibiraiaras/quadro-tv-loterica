@@ -11,14 +11,29 @@ body{
     height:100vh;
     width:100vw;
     overflow:hidden;
-    display:flex;
-    justify-content:center;
-    align-items:center;
+}
+
+.container{
+    position:relative;
+    width:100vw;
+    height:100vh;
 }
 
 img{
+    position:absolute;
     width:100vw;
     height:100vh;
+    top:0;
+    left:0;
+    transition: opacity 1s ease-in-out;
+}
+
+.oculta{
+    opacity:0;
+}
+
+.visivel{
+    opacity:1;
 }
 </style>
 
@@ -26,7 +41,10 @@ img{
 
 <body>
 
-<img id="tela">
+<div class="container">
+    <img id="img1" class="visivel">
+    <img id="img2" class="oculta">
+</div>
 
 <script>
 
@@ -40,41 +58,56 @@ function getImagemDoDia() {
         case 4: return "qui.png";
         case 5: return "sex.png";
         case 6: return "sáb.png";
-        default: return null; // domingo
+        default: return null;
     }
 }
 
 let mostrandoQuadro = true;
+let atual = 1;
+
+function trocarImagem(src, fit, tempo) {
+
+    const imgAtual = document.getElementById("img" + atual);
+    const proxima = document.getElementById("img" + (atual === 1 ? 2 : 1));
+
+    const timestamp = new Date().getTime();
+
+    const nova = new Image();
+    nova.src = src + "?t=" + timestamp;
+
+    nova.onload = function() {
+
+        proxima.src = nova.src;
+        proxima.style.objectFit = fit;
+
+        // fade
+        proxima.classList.remove("oculta");
+        proxima.classList.add("visivel");
+
+        imgAtual.classList.remove("visivel");
+        imgAtual.classList.add("oculta");
+
+        atual = (atual === 1 ? 2 : 1);
+    };
+
+    setTimeout(atualizarTela, tempo);
+}
 
 function atualizarTela() {
-
-    const img = document.getElementById("tela");
-    const timestamp = new Date().getTime();
 
     const imagemDia = getImagemDoDia();
 
     if (!imagemDia) {
-        img.style.objectFit = "cover";
-        img.src = "Quadro.png?t=" + timestamp;
-        setTimeout(atualizarTela, 60000);
+        trocarImagem("Quadro.png", "cover", 60000);
         return;
     }
 
     if (mostrandoQuadro) {
-
-        img.style.objectFit = "cover"; // 🔥 quadro ocupa tudo
-        img.src = "Quadro.png?t=" + timestamp;
-
         mostrandoQuadro = false;
-        setTimeout(atualizarTela, 50000);
-
+        trocarImagem("Quadro.png", "cover", 50000);
     } else {
-
-        img.style.objectFit = "contain"; // 🔥 não distorce
-        img.src = imagemDia + "?t=" + timestamp;
-
         mostrandoQuadro = true;
-        setTimeout(atualizarTela, 10000);
+        trocarImagem(imagemDia, "contain", 10000);
     }
 }
 
