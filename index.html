@@ -5,41 +5,75 @@
 <meta charset="UTF-8">
 
 <style>
-
 body{
-margin:0;
-background:black;
-height:100vh;
-width:100vw;
-overflow:hidden;
+    margin:0;
+    background:black;
+    height:100vh;
+    width:100vw;
+    overflow:hidden;
 }
 
 img{
-width:100vw;
-height:100vh;
-object-fit:cover;
+    width:100vw;
+    height:100vh;
+    object-fit:cover;
 }
-
 </style>
 
 </head>
 
 <body>
 
-<img id="quadro">
+<img id="tela">
 
 <script>
-function atualizarImagem(){
-    const img = document.getElementById("quadro");
-    const timestamp = new Date().getTime();
-    img.src = "Quadro.png?t=" + timestamp;
+
+function getImagemDoDia() {
+    const hoje = new Date().getDay();
+
+    switch(hoje){
+        case 1: return "seg.png";
+        case 2: return "ter.png";
+        case 3: return "qua.png";
+        case 4: return "qui.png";
+        case 5: return "sex.png";
+        case 6: return "sáb.png";
+        default: return null; // domingo
+    }
 }
 
-// atualiza ao carregar
-atualizarImagem();
+let mostrandoQuadro = true;
 
-// atualiza a cada 60 segundos
-setInterval(atualizarImagem, 60000);
+function atualizarTela() {
+
+    const img = document.getElementById("tela");
+    const timestamp = new Date().getTime();
+
+    const imagemDia = getImagemDoDia();
+
+    if (!imagemDia) {
+        // Domingo → só quadro
+        img.src = "Quadro.png?t=" + timestamp;
+        setTimeout(atualizarTela, 60000);
+        return;
+    }
+
+    if (mostrandoQuadro) {
+        img.src = "Quadro.png?t=" + timestamp;
+        mostrandoQuadro = false;
+
+        setTimeout(atualizarTela, 50000); // 50 segundos
+    } else {
+        img.src = imagemDia + "?t=" + timestamp;
+        mostrandoQuadro = true;
+
+        setTimeout(atualizarTela, 10000); // 10 segundos
+    }
+}
+
+// inicia
+atualizarTela();
+
 </script>
 
 </body>
