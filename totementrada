@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <title>Totem Entrada</title>
+
+  <style>
+    body {
+      margin: 0;
+      background: black;
+      overflow: hidden;
+    }
+
+    img {
+      width: 100vw;
+      height: 100vh;
+      object-fit: contain;
+    }
+  </style>
+</head>
+
+<body>
+
+<img id="tela" src="AcumRetrato.png">
+
+<script>
+  const tela = document.getElementById("tela");
+
+  function getImagemDoDia() {
+    const dias = ["seg.png", "seg.png", "ter.png", "qua.png", "qui.png", "sex.png", "sáb.png"];
+    const hoje = new Date().getDay();
+    return dias[hoje];
+  }
+
+  function loop() {
+    // Mostra acumulados (50s)
+    tela.src = "AcumRetrato.png";
+
+    setTimeout(() => {
+      // Mostra imagem do dia (10s)
+      tela.src = getImagemDoDia();
+
+      setTimeout(() => {
+        loop();
+      }, 10000);
+
+    }, 50000);
+  }
+
+  loop();
+
+  // Recarrega a cada 3 horas
+  setInterval(() => {
+    location.reload();
+  }, 3 * 60 * 60 * 1000);
+</script>
+
+</body>
+</html>
