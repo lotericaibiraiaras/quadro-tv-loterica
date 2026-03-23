@@ -89,12 +89,14 @@ nova.onload = function() {
     atual = (atual === 1 ? 2 : 1);
 
     // ✅ TEMPO COMEÇA AQUI (depois da troca real)
-    setTimeout(atualizarTela, tempo);
+    // setTimeout(atualizarTela, tempo); removido em 23/03/2026
 };
 
 // 🔥 SE DER ERRO (sem internet)
 nova.onerror = function() {
     console.log("Sem internet, mantendo imagem atual");
+
+    setTimeout(atualizarTela, tempo);
 };
 
     setTimeout(atualizarTela, tempo);
