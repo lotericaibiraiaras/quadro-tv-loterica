@@ -75,20 +75,24 @@ function trocarImagem(src, fit, tempo) {
     const nova = new Image();
     nova.src = src + "?t=" + timestamp;
 
-    nova.onload = function() {
+nova.onload = function() {
 
-        proxima.src = nova.src;
-        proxima.style.objectFit = fit;
+    proxima.src = nova.src;
+    proxima.style.objectFit = fit;
 
-        // fade
-        proxima.classList.remove("oculta");
-        proxima.classList.add("visivel");
+    proxima.classList.remove("oculta");
+    proxima.classList.add("visivel");
 
-        imgAtual.classList.remove("visivel");
-        imgAtual.classList.add("oculta");
+    imgAtual.classList.remove("visivel");
+    imgAtual.classList.add("oculta");
 
-        atual = (atual === 1 ? 2 : 1);
-    };
+    atual = (atual === 1 ? 2 : 1);
+};
+
+// 🔥 SE DER ERRO (sem internet)
+nova.onerror = function() {
+    console.log("Sem internet, mantendo imagem atual");
+};
 
     setTimeout(atualizarTela, tempo);
 }
