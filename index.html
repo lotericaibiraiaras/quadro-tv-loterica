@@ -87,6 +87,9 @@ nova.onload = function() {
     imgAtual.classList.add("oculta");
 
     atual = (atual === 1 ? 2 : 1);
+
+    // ✅ TEMPO COMEÇA AQUI (depois da troca real)
+    setTimeout(atualizarTela, tempo);
 };
 
 // 🔥 SE DER ERRO (sem internet)
