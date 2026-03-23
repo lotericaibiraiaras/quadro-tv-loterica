@@ -48,6 +48,15 @@ img{
 
 <script>
 
+// ==============================
+// CONFIG
+// ==============================
+const TEMPO_QUADRO = 50000; // 50s
+const TEMPO_DIA = 10000;    // 10s
+
+// ==============================
+// IMAGEM DO DIA
+// ==============================
 function getImagemDoDia() {
     const hoje = new Date().getDay();
 
@@ -58,26 +67,31 @@ function getImagemDoDia() {
         case 4: return "qui.png";
         case 5: return "sex.png";
         case 6: return "sáb.png";
-        default: return null;
+        case 0: return "seg.png"; // domingo usa seg
     }
 }
 
-let mostrandoQuadro = true;
+// ==============================
+// CONTROLE
+// ==============================
 let atual = 1;
+let mostrandoQuadro = true;
 
-function trocarImagem(src, fit, tempo) {
+// ==============================
+// TROCA DE IMAGEM (SEM TRAVAR)
+// ==============================
+function trocarImagem(src, fit) {
 
     const imgAtual = document.getElementById("img" + atual);
     const proxima = document.getElementById("img" + (atual === 1 ? 2 : 1));
 
     const timestamp = new Date().getTime();
 
-    const nova = new Image();
-    nova.src = src + "?t=" + timestamp;
+    // força atualização (cache bust)
+    const novaSrc = src + "?t=" + timestamp;
 
-nova.onload = function() {
-
-    proxima.src = nova.src;
+    // troca imediata (não espera internet)
+    proxima.src = novaSrc;
     proxima.style.objectFit = fit;
 
     proxima.classList.remove("oculta");
@@ -87,44 +101,38 @@ nova.onload = function() {
     imgAtual.classList.add("oculta");
 
     atual = (atual === 1 ? 2 : 1);
-
-    // ✅ TEMPO COMEÇA AQUI (depois da troca real)
-    // setTimeout(atualizarTela, tempo); removido em 23/03/2026
-};
-
-// 🔥 SE DER ERRO (sem internet)
-nova.onerror = function() {
-    console.log("Sem internet, mantendo imagem atual");
-
-    setTimeout(atualizarTela, tempo);
-};
-
-    setTimeout(atualizarTela, tempo);
 }
 
-function atualizarTela() {
+// ==============================
+// LOOP PRINCIPAL (RELÓGIO FIXO)
+// ==============================
+function iniciarLoop() {
 
-    const imagemDia = getImagemDoDia();
+    function ciclo() {
 
-    if (!imagemDia) {
-        trocarImagem("Quadro.png", "cover", 60000);
-        return;
+        const imagemDia = getImagemDoDia();
+
+        if (mostrandoQuadro) {
+            trocarImagem("Quadro.png", "cover");
+            mostrandoQuadro = false;
+
+            setTimeout(ciclo, TEMPO_QUADRO);
+
+        } else {
+            trocarImagem(imagemDia, "contain");
+            mostrandoQuadro = true;
+
+            setTimeout(ciclo, TEMPO_DIA);
+        }
     }
 
-    if (mostrandoQuadro) {
-        mostrandoQuadro = false;
-        trocarImagem("Quadro.png", "cover", 50000);
-    } else {
-        mostrandoQuadro = true;
-        trocarImagem(imagemDia, "contain", 10000);
-    }
+    ciclo();
 }
 
 // inicia
-atualizarTela();
+iniciarLoop();
 
 </script>
 
 </body>
-
 </html>
