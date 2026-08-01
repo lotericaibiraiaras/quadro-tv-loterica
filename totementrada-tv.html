@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+<meta charset="UTF-8">
+
+<title>Totem Entrada TV</title>
+
+<style>
+
+body{
+    margin:0;
+    background:black;
+    overflow:hidden;
+    width:100vw;
+    height:100vh;
+}
+
+.container{
+    position:relative;
+    width:100vw;
+    height:100vh;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    overflow:hidden;
+}
+
+img{
+    position:absolute;
+
+    /* gira a imagem */
+    transform:rotate(90deg);
+
+    /* ocupa praticamente toda a altura */
+    width:100vh;
+    height:100vw;
+
+    object-fit:contain;
+
+    transition:opacity 1s;
+
+    opacity:0;
+}
+
+.visivel{
+    opacity:1;
+}
+
+.oculta{
+    opacity:0;
+}
+
+</style>
+
+</head>
+
+<body>
+
+<div class="container">
+
+<img id="img1" class="visivel">
+<img id="img2" class="oculta">
+
+</div>
+
+<script>
+
+function getImagemDoDia(){
+
+    const hoje = new Date().getDay();
+
+    switch(hoje){
+
+        case 1: return "seg.png";
+        case 2: return "ter.png";
+        case 3: return "qua.png";
+        case 4: return "qui.png";
+        case 5: return "sex.png";
+        case 6: return "sáb.png";
+
+        default:
+            return "seg.png";
+
+    }
+
+}
+
+let mostrandoAcumulado=true;
+let atual=1;
+
+function trocarImagem(src,tempo){
+
+    const atualImg=document.getElementById("img"+atual);
+    const proxImg=document.getElementById("img"+(atual==1?2:1));
+
+    const nova=new Image();
+
+    nova.src=src+"?t="+new Date().getTime();
+
+    nova.onload=function(){
+
+        proxImg.src=nova.src;
+
+        proxImg.classList.remove("oculta");
+        proxImg.classList.add("visivel");
+
+        atualImg.classList.remove("visivel");
+        atualImg.classList.add("oculta");
+
+        atual=(atual==1?2:1);
+
+    };
+
+    nova.onerror=function(){
+        console.log("Imagem indisponível.");
+    };
+
+    setTimeout(atualizarTela,tempo);
+
+}
+
+function atualizarTela(){
+
+    if(mostrandoAcumulado){
+
+        mostrandoAcumulado=false;
+
+        trocarImagem("AcumRetrato.png",50000);
+
+    }else{
+
+        mostrandoAcumulado=true;
+
+        trocarImagem(getImagemDoDia(),10000);
+
+    }
+
+}
+
+atualizarTela();
+
+</script>
+
+</body>
+
+</html>
